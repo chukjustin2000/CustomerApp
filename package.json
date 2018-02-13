@@ -1,0 +1,23 @@
+{
+  "name": "customerapp",
+  "version": "1.0.0",
+  "description": "simple",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "*",
+    "body-parser": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chukjustin2000/CustomerApp.git"
+  },
+  "author": "Chukwuka Egbujio",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chukjustin2000/CustomerApp/issues"
+  },
+  "homepage": "https://github.com/chukjustin2000/CustomerApp#readme"
+}
