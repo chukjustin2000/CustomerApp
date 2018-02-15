@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var path = require('path');
 var app = express();
+var expressValidator = require('express-validator');
 
 
 // var logger = (req, res, next) => {
@@ -20,6 +21,28 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 
+//Express Validator Middleware
+app.use(expressValidator({
+	errorFormatter: function(param, msg, value, location) {
+		var namespace = param.split('.')
+		, root    = namespace.shift()
+		, formParam = root;
+  
+	  while(namespace.length) {
+		formParam += '[' + namespace.shift() + ']';
+	  }
+	  return {
+		param : formParam,
+		msg   : msg,
+		value : value,
+		location : location
+	  };
+	}
+  }));
+
+// var middlewareOptions= (param, msg, value, location)=>{
+
+// }
 //Set static path
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -49,6 +72,34 @@ app.get('/', (req, res)=>{
 		title:'Customers',
 		users: users
 	});  
+});
+
+app.post('/users/add', (req, res)=>{
+
+	req.checkBody('first_name', 'First Name is required').notEmpty();
+	req.checkBody('last_name','Last Name is required').notEmpty();
+	req.checkBody('email','Email is required').notEmpty();
+
+	var newUser = {
+		first_name: req.body.first_name,
+		last_name: req.body.last_name,
+		email: req.body.email
+	}
+
+	var errors= req.validationErrors();
+
+	if(errors){
+		console.log('ERRORS')
+	}
+	else {
+		var newUser = {
+			first_name: req.body.first_name,
+			last_name: req.body.last_name,
+			email: req.body.email
+		}
+		console.log('SUCCESS');
+	}
+	// console.log(newUser);
 });
 
 app.listen(3000, () => console.log('Server started on port 3000...'));

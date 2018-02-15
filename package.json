@@ -10,6 +10,7 @@
     "body-parser": "*",
     "ejs": "^2.5.7",
     "express": "*",
+    "express-validator": "^5.0.0",
     "mongoose": "*"
   },
   "repository": {
