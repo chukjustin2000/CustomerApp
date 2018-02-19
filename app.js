@@ -1,6 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var mongoose = require('mongoose');
+//var mongoose = require('mongoose');
 var path = require('path');
 var app = express();
 var expressValidator = require('express-validator');
@@ -20,6 +20,12 @@ app.set('views', path.join(__dirname, 'views'));
 //Body Parser Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
+
+//Global vars
+app.use((req, res, next)=>{
+	res.locals.errors = null;
+	next();
+});
 
 //Express Validator Middleware
 app.use(expressValidator({
@@ -89,7 +95,11 @@ app.post('/users/add', (req, res)=>{
 	var errors= req.validationErrors();
 
 	if(errors){
-		console.log('ERRORS')
+		res.render('index',{
+			title:'Customers',
+			users: users,
+			errors: errors 
+		}); 
 	}
 	else {
 		var newUser = {
