@@ -1,9 +1,14 @@
+// import { ObjectId } from '../../AppData/Local/Microsoft/TypeScript/2.6/node_modules/@types/bson';
+
 var express = require('express');
 var bodyParser = require('body-parser');
 //var mongoose = require('mongoose');
 var path = require('path');
 var app = express();
 var expressValidator = require('express-validator');
+var mongojs = require('mongojs');
+var ObjectId = mongojs.ObjectId;
+var db = mongojs('customerapp', ['users']);
 
 
 // var logger = (req, res, next) => {
@@ -52,31 +57,12 @@ app.use(expressValidator({
 //Set static path
 app.use(express.static(path.join(__dirname, 'public')));
 
-var users = [
-	{
-		id:1,
-		first_name:'Chukwuka',
-		last_name:'Egbujio',
-		email:'chuks@gmail.com'
-	},
-	{
-		id:2,
-		first_name:'Musa',
-		last_name:'Rabiu',
-		email:'rabinny@gmail.com'
-	},
-	{
-		id:3,
-		first_name:'Uche',
-		last_name:'Egbujio',
-		email:'whimzy@gmail.com'
-	}
-]
-
 app.get('/', (req, res)=>{
-	res.render('index',{
-		title:'Customers',
-		users: users
+	db.users.find( (err, docs)=> {
+		res.render('index',{
+			title:'Customers',
+			users: docs
+		});
 	});  
 });
 
@@ -107,9 +93,24 @@ app.post('/users/add', (req, res)=>{
 			last_name: req.body.last_name,
 			email: req.body.email
 		}
-		console.log('SUCCESS');
+		
+		db.users.insert(newUser, (err, result)=>{
+			if(err){
+				console.log(err);
+			}
+			res.redirect('/');
+		});
 	}
 	// console.log(newUser);
+});
+
+app.delete('/users/delete/:id', (req, res)=>{
+	db.users.remove({_id: ObjectId(req.params.id)}, (err, result)=>{
+		if(err){
+			console.log(err);
+		}
+		res.redirect('/');
+	});
 });
 
 app.listen(3000, () => console.log('Server started on port 3000...'));
